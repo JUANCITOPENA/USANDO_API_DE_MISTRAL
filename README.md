@@ -4,7 +4,48 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 
-> **Un cliente de chat avanzado y de código abierto que funciona como un lienzo de trabajo iterativo con la API de Mistral AI**
+
+# 🧠 Asistente de Desarrollo AI con Mistral
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftu-usuario%2Ftu-repositorio)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> Un cliente de chat avanzado que funciona como un **lienzo de trabajo iterativo** con la API de Mistral AI.
+
+---
+
+## 🎯 Concepto Clave: Lienzo Iterativo
+
+A diferencia de un chat tradicional donde las respuestas se apilan, este asistente permite **modificar, mejorar y expandir la respuesta anterior**. Cada nueva instrucción refina el trabajo existente, creando un resultado único y unificado, ideal para tareas de desarrollo complejas como la generación y refactorización de código.
+
+## ✨ Características Principales
+
+*   🔄 **Chat Contextual Iterativo:** La IA edita y mejora su propia respuesta basándose en tus nuevas peticiones.
+*   🔐 **Arquitectura Serverless Segura:** Tu clave de API de Mistral está protegida en una función de Vercel y nunca se expone en el navegador.
+*   🎨 **Interfaz Completa de 3 Paneles:**
+    *   **Historial:** Guarda y recupera conversaciones completas con un clic.
+    *   **Chat:** El lienzo principal donde ocurre la interacción y la magia iterativa.
+    *   **Estadísticas:** Monitoriza el uso de tokens y caracteres en tiempo real.
+*   ✨ **Experiencia de Usuario Premium:**
+    *   Renderizado de Markdown con resaltado de sintaxis para múltiples lenguajes.
+    *   Botones para copiar bloques de código con un solo clic.
+    *   Área de texto auto-expandible y diseño 100% responsive.
+
+
+*   **Deployment:** Vercel
+
+## 🚀 Instalación Rápida
+
+Sigue estos pasos para desplegar tu propia instancia en minutos.
+
+### ✅ Prerrequisitos
+
+*   **Node.js** instalada.
+*   Una cuenta gratuita de **[Vercel](https://vercel.com/signup)**.
+*   Una **[clave de API de Mistral](https://console.mistral.ai/api-keys/)**.
+
+
+ **Un cliente de chat avanzado y de código abierto que funciona como un lienzo de trabajo iterativo con la API de Mistral AI**
 
 Este asistente permite mantener un contexto conversacional para modificar, mejorar y expandir las respuestas anteriores, creando un resultado unificado y coherente. A diferencia de un chat convencional, aquí cada interacción refina y mejora el trabajo anterior.
 
