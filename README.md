@@ -202,6 +202,7 @@ Interfaz web para un asistente de IA que utiliza el modelo Mistral. Aplicación 
 </body>
 </html>
 ---
+
 🎯 Funcionalidad
 
 ✅ Chat interactivo con IA
@@ -210,6 +211,394 @@ Interfaz web para un asistente de IA que utiliza el modelo Mistral. Aplicación 
 ✅ Interfaz responsive
 ✅ Soporte para código y markdown
 ✅ Diseño moderno con iconosReintentarClaude puede cometer errores. Por favor, verifique las respuestas.
+
+
+## 🎨 Estilos CSS (style.css)
+
+### 📋 Descripción
+
+Archivo de estilos que define el **tema oscuro moderno** para la interfaz del asistente AI. Utiliza una paleta de colores inspirada en **Tokyo Night** con diseño responsive completo.
+
+### ✨ Características
+- 🌙 **Tema oscuro** con paleta Tokyo Night
+- 📱 **Diseño responsive** (móvil/tablet/desktop)
+- 🎯 **Grid layout** de 3 paneles
+- 🎨 **Scrollbars personalizadas**
+- ⚡ **Animaciones suaves**
+- 💻 **Resaltado de código** integrado
+
+### 📁 Código CSS
+
+```css
+/* --- Variables y Estilos Globales --- */
+:root {
+    --bg-color: #1a1b26;
+    --panel-bg-color: #24283b;
+    --border-color: #414868;
+    --text-color: #c0caf5;
+    --highlight-color: #7aa2f7;
+    --accent-color: #bb9af7;
+    --green-color: #9ece6a;
+    --red-color: #f7768e;
+    --font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+}
+
+/* --- Estructura Principal --- */
+.app-container {
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    height: 100vh;
+}
+
+aside, main {
+    background-color: var(--panel-bg-color);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.history-panel {
+    border-left: none;
+}
+
+header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+h1 { color: var(--highlight-color); font-size: 1.5rem; }
+h2 { color: var(--accent-color); font-size: 1.2rem; }
+h3 { color: var(--green-color); margin-bottom: 0.8rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;}
+i { margin-right: 0.5rem; }
+
+/* --- Panel de Historial (Izquierda) --- */
+.history-panel header .header-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+.history-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+.history-item {
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.history-item:hover {
+    background-color: var(--border-color);
+}
+.history-item.active {
+    background-color: var(--highlight-color);
+    color: var(--bg-color);
+    font-weight: bold;
+}
+#new-chat-btn, #clear-history-btn {
+    background: none;
+    border: 1px solid;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+#new-chat-btn {
+    border-color: var(--green-color);
+    color: var(--green-color);
+}
+#new-chat-btn:hover {
+    background-color: var(--green-color);
+    color: var(--bg-color);
+}
+#clear-history-btn {
+    border-color: var(--red-color);
+    color: var(--red-color);
+}
+#clear-history-btn:hover {
+    background-color: var(--red-color);
+    color: var(--bg-color);
+}
+
+
+/* --- Panel de Chat (Central) --- */
+.chat-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.main-header .main-header-title { text-align: center; }
+.main-header p {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+.chat-response {
+    flex-grow: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    line-height: 1.7;
+}
+.welcome-message {
+    text-align: center;
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    margin-top: 2rem;
+}
+.chat-input-area {
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    background-color: rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+#chat-form {
+    display: flex;
+    align-items: flex-end;
+}
+#prompt-input {
+    flex-grow: 1;
+    background-color: #2e344e;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: none;
+    max-height: 200px;
+    overflow-y: auto;
+}
+#prompt-input:focus {
+    outline: none;
+    border-color: var(--highlight-color);
+    box-shadow: 0 0 5px var(--highlight-color);
+}
+#send-btn {
+    background-color: var(--highlight-color);
+    color: var(--bg-color);
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    margin-left: 0.5rem;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.2s;
+}
+#send-btn:hover {
+    background-color: #9abeff;
+}
+#send-btn:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+}
+
+/* --- Estilos de la Respuesta del Chat --- */
+.message {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border-radius: 8px;
+}
+.user-message {
+    background-color: rgba(122, 162, 247, 0.1); /* Tono azulado */
+    border-left: 3px solid var(--highlight-color);
+}
+.ai-message {
+    background-color: rgba(187, 154, 247, 0.05); /* Tono morado */
+}
+.message-header {
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+.message-header.user {
+    color: var(--highlight-color);
+}
+.message-content p {
+    margin-bottom: 1em;
+}
+.message-content ul, .message-content ol {
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+}
+.message-content a {
+    color: var(--green-color);
+    text-decoration: none;
+}
+.message-content a:hover {
+    text-decoration: underline;
+}
+
+/* --- Bloques de Código y Prism.js --- */
+pre[class*="language-"] {
+    position: relative;
+    margin: 1.5em 0 !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--border-color);
+    overflow: auto;
+}
+.copy-btn {
+    position: absolute;
+    top: 0.8em;
+    right: 0.8em;
+    background: #414868;
+    border: none;
+    color: var(--text-color);
+    padding: 0.3rem 0.6rem;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0.3;
+    transition: opacity 0.2s;
+}
+pre[class*="language-"]:hover .copy-btn {
+    opacity: 1;
+}
+.copy-btn:hover {
+    background: var(--highlight-color);
+    color: var(--bg-color);
+}
+
+/* --- Panel de Estadísticas (Derecha) --- */
+.stats-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+.stats-section {
+    margin-bottom: 2rem;
+}
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+}
+.stat-item span:first-child {
+    color: var(--text-color);
+    opacity: 0.8;
+}
+.stat-item span:last-child {
+    font-weight: bold;
+    color: var(--green-color);
+}
+
+/* --- Scrollbars Personalizadas --- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--highlight-color);
+}
+
+/* --- Estado de Carga --- */
+.loading-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+.loading-indicator .fa-spinner {
+    font-size: 2rem;
+    color: var(--accent-color);
+}
+
+/* --- Botones solo para móvil (ocultos por defecto) --- */
+.mobile-only-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.mobile-only-btn i { margin: 0; }
+
+/*
+=====================================================
+===               DISEÑO RESPONSIVE               ===
+=====================================================
+*/
+@media (max-width: 800px) {
+    .app-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .history-panel, .stats-panel {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        border-left: none;
+    }
+    .panel-visible {
+        display: flex;
+    }
+    .main-header .mobile-only-btn {
+        display: block;
+    }
+    .history-panel header .mobile-only-btn,
+    .stats-panel header .mobile-only-btn {
+        display: block;
+    }
+    .main-header {
+        justify-content: space-between;
+    }
+    .main-header-title h1 { font-size: 1.2rem; }
+}
+```
+
+### 🎨 Paleta de Colores (Tokyo Night)
+```css
+--bg-color: #1a1b26        /* Fondo principal */
+--panel-bg-color: #24283b   /* Fondo de paneles */
+--text-color: #c0caf5       /* Texto principal */
+--highlight-color: #7aa2f7  /* Azul (botones/enlaces) */
+--accent-color: #bb9af7     /* Morado (títulos) */
+--green-color: #9ece6a      /* Verde (éxito) */
+--red-color: #f7768e        /* Rojo (eliminar) */
+```
+
+### 📱 Responsive Breakpoints
+- **Desktop**: `> 800px` - Layout de 3 columnas
+- **Móvil**: `≤ 800px` - Panel único con navegación por botones
+
+
+
 ### 📋 Instalación Paso a Paso
 
 #### 1️⃣ Clonar el Repositorio
