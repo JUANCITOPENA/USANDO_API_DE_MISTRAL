@@ -104,63 +104,114 @@ Antes de comenzar, asegúrate de tener:
 - **Git** - [Instalar Git](https://git-scm.com/downloads)
 
 ## Codigo HTML - archivo index.html:
-Este código HTML crea una interfaz web para un asistente de IA similar a ChatGPT, pero usando el modelo Mistral. Es una aplicación de chat completa con historial y estadísticas.
 
-🏗️ Estructura Principal
-📱 Layout Responsivo
+Interfaz web para un asistente de IA que utiliza el modelo Mistral. Aplicación de chat completa con historial de conversaciones y estadísticas de uso en tiempo real.
+✨ Características
 
-3 paneles principales: Historial (izq) | Chat (centro) | Estadísticas (der)
-Diseño móvil: Botones para mostrar/ocultar paneles laterales
+💬 Chat interactivo con IA
+📚 Historial de conversaciones
+📊 Estadísticas de tokens y caracteres
+📱 Diseño responsive
+🎨 Soporte para Markdown y resaltado de código
+🌙 Tema oscuro moderno
 
+🔧 Tecnologías
 
-🔧 Componentes Principales
-📚 Panel de Historial (history-panel)
+HTML5 - Estructura base
+CSS3 - Estilos personalizados
+JavaScript ES6 - Lógica de la aplicación
+Font Awesome - Iconografía
+Prism.js - Resaltado de sintaxis
+Marked.js - Renderizado de Markdown
 
-🕒 Muestra conversaciones anteriores
-➕ Botón "Nuevo chat"
-🗑️ Botón limpiar historial
-📱 Botón cerrar (móvil)
+📁 Código HTML
+html<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="https://cdn3d.iconscout.com/3d/premium/thumb/ai-chip-9254340-7577793.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente de Desarrollo AI con Mistral</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside id="history-panel" class="history-panel">
+            <header>
+                <button id="close-history-btn" class="mobile-only-btn" title="Cerrar Historial"><i class="fa-solid fa-xmark"></i></button>
+                <h2><i class="fa-solid fa-clock-rotate-left"></i> Historial</h2>
+                <div class="header-buttons">
+                    <button id="new-chat-btn" title="Iniciar nueva conversación"><i class="fa-solid fa-plus"></i> Nuevo</button>
+                    <button id="clear-history-btn" title="Limpiar todo el historial"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            </header>
+            <div id="history-list" class="history-list"></div>
+        </aside>
+        
+        <main class="chat-panel">
+            <header class="main-header">
+                <button id="toggle-history-btn" class="mobile-only-btn" title="Ver Historial"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                <div class="main-header-title">
+                    <h1>Asistente de Desarrollo AI</h1>
+                    <p>Potenciado por Mistral</p>
+                </div>
+                <button id="toggle-stats-btn" class="mobile-only-btn" title="Ver Estadísticas"><i class="fa-solid fa-chart-simple"></i></button>
+            </header>
+            <div id="chat-response" class="chat-response">
+                <div class="welcome-message"><p>¡Hola! Soy tu asistente de desarrollo. ¿En qué puedo ayudarte hoy?</p></div>
+            </div>
+            <div class="chat-input-area">
+                <form id="chat-form">
+                    <textarea id="prompt-input" placeholder="Escribe tu prompt aquí..." rows="1"></textarea>
+                    <button type="submit" id="send-btn" title="Enviar Prompt"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </main>
+        
+        <aside id="stats-panel" class="stats-panel">
+            <header>
+                <button id="close-stats-btn" class="mobile-only-btn" title="Cerrar Estadísticas"><i class="fa-solid fa-xmark"></i></button>
+                <h2><i class="fa-solid fa-chart-simple"></i> Estadísticas</h2>
+            </header>
+            <div class="stats-content">
+                <div class="stats-section">
+                    <h3>Última Interacción</h3>
+                    <div class="stat-item">
+                        <span><i class="fa-solid fa-arrow-up"></i> Prompt:</span>
+                        <span id="prompt-stats">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span><i class="fa-solid fa-arrow-down"></i> Respuesta:</span>
+                        <span id="completion-stats">-</span>
+                    </div>
+                </div>
+                <div class="stats-section">
+                    <h3>Totales de la Sesión</h3>
+                    <div class="stat-item">
+                        <span><i class="fa-solid fa-hashtag"></i> Tokens Totales:</span>
+                        <span id="session-total-tokens">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span><i class="fa-solid fa-font"></i> Caracteres Totales:</span>
+                        <span id="session-total-chars">-</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
 
-💬 Panel de Chat Central (chat-panel)
-
-🎯 Header: Título "Asistente de Desarrollo AI - Potenciado por Mistral"
-📝 Área de respuestas: Donde aparecen los mensajes
-⌨️ Área de input: Textarea para escribir + botón enviar
-👋 Mensaje de bienvenida: "¡Hola! Soy tu asistente de desarrollo..."
-
-📊 Panel de Estadísticas (stats-panel)
-
-📈 Última interacción:
-
-⬆️ Tokens del prompt
-⬇️ Tokens de respuesta
-
-
-🔢 Totales de sesión:
-
-
-Tokens totales
-
-📝 Caracteres totales
-
-
-
-
-🎨 Recursos Externos
-🖼️ Estilos y Fuentes
-
-🎨 style.css (archivo local)
-🔤 Font Awesome → Iconos
-🌙 Prism Tomorrow → Resaltado de código
-
-⚙️ JavaScript
-
-📝 Marked.js → Renderizado Markdown
-🎨 Prism.js → Resaltado de sintaxis
-🔧 script.js → Lógica principal (módulo)
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="script.js" type="module"></script>
+</body>
+</html>
+---
 🎯 Funcionalidad
+
 ✅ Chat interactivo con IA
 ✅ Historial de conversaciones
 ✅ Estadísticas de uso
