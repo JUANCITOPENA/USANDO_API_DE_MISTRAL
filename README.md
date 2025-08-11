@@ -687,6 +687,8 @@ MISTRAL_API_KEY=tu_clave_api_mistral_aqui
   ]
 }
 
+```
+
 #### Packaje.json:
 ```package.json
 {
