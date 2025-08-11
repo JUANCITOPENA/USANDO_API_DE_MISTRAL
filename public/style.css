@@ -25,7 +25,7 @@ html, body {
     overflow: hidden;
 }
 
-/* --- Estructura Principal --- */
+/* --- Estructura Principal (Desktop) --- */
 .app-container {
     display: grid;
     grid-template-columns: 280px 1fr 280px;
@@ -50,6 +50,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
 }
 
 h1 { color: var(--highlight-color); font-size: 1.5rem; }
@@ -58,6 +59,10 @@ h3 { color: var(--green-color); margin-bottom: 0.8rem; border-bottom: 1px solid 
 i { margin-right: 0.5rem; }
 
 /* --- Panel de Historial (Izquierda) --- */
+.history-panel header .header-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
 .history-list {
     flex-grow: 1;
     overflow-y: auto;
@@ -81,20 +86,31 @@ i { margin-right: 0.5rem; }
     color: var(--bg-color);
     font-weight: bold;
 }
-#clear-history-btn {
+#new-chat-btn, #clear-history-btn {
     background: none;
-    border: 1px solid var(--red-color);
-    color: var(--red-color);
+    border: 1px solid;
     padding: 0.3rem 0.6rem;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 0.8rem;
+}
+#new-chat-btn {
+    border-color: var(--green-color);
+    color: var(--green-color);
+}
+#new-chat-btn:hover {
+    background-color: var(--green-color);
+    color: var(--bg-color);
+}
+#clear-history-btn {
+    border-color: var(--red-color);
+    color: var(--red-color);
 }
 #clear-history-btn:hover {
     background-color: var(--red-color);
     color: var(--bg-color);
 }
-
 
 /* --- Panel de Chat (Central) --- */
 .chat-panel {
@@ -102,6 +118,7 @@ i { margin-right: 0.5rem; }
     flex-direction: column;
     height: 100vh;
 }
+.main-header .main-header-title { text-align: center; }
 .main-header p {
     font-size: 0.9rem;
     color: var(--text-color);
@@ -123,6 +140,7 @@ i { margin-right: 0.5rem; }
     padding: 1rem;
     border-top: 1px solid var(--border-color);
     background-color: rgba(0,0,0,0.1);
+    flex-shrink: 0;
 }
 #chat-form {
     display: flex;
@@ -166,148 +184,102 @@ i { margin-right: 0.5rem; }
 }
 
 /* --- Estilos de la Respuesta del Chat --- */
-.message {
-    margin-bottom: 2rem;
-    padding: 1rem;
-    border-radius: 8px;
-}
-.user-message {
-    background-color: rgba(122, 162, 247, 0.1); /* Tono azulado */
-    border-left: 3px solid var(--highlight-color);
-}
-.ai-message {
-    background-color: rgba(187, 154, 247, 0.05); /* Tono morado */
-}
-.message-header {
-    font-weight: bold;
-    color: var(--accent-color);
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-}
-.message-header.user {
-    color: var(--highlight-color);
-}
-.message-content p {
-    margin-bottom: 1em;
-}
-.message-content ul, .message-content ol {
-    margin-left: 1.5em;
-    margin-bottom: 1em;
-}
-.message-content a {
-    color: var(--green-color);
-    text-decoration: none;
-}
-.message-content a:hover {
-    text-decoration: underline;
-}
+.message { margin-bottom: 2rem; padding: 1rem; border-radius: 8px; }
+.user-message { background-color: rgba(122, 162, 247, 0.1); border-left: 3px solid var(--highlight-color); }
+.ai-message { background-color: rgba(187, 154, 247, 0.05); }
+.message-header { font-weight: bold; color: var(--accent-color); margin-bottom: 0.5rem; display: flex; align-items: center; }
+.message-header.user { color: var(--highlight-color); }
+.message-content p { margin-bottom: 1em; }
+.message-content ul, .message-content ol { margin-left: 1.5em; margin-bottom: 1em; }
+.message-content a { color: var(--green-color); text-decoration: none; }
+.message-content a:hover { text-decoration: underline; }
 
 /* --- Bloques de Código y Prism.js --- */
-pre[class*="language-"] {
-    position: relative;
-    margin: 1.5em 0 !important;
-    border-radius: 8px !important;
-    border: 1px solid var(--border-color);
-    overflow: auto;
-}
-.copy-btn {
-    position: absolute;
-    top: 0.8em;
-    right: 0.8em;
-    background: #414868;
-    border: none;
-    color: var(--text-color);
-    padding: 0.3rem 0.6rem;
-    border-radius: 5px;
-    cursor: pointer;
-    opacity: 0.3;
-    transition: opacity 0.2s;
-}
-pre[class*="language-"]:hover .copy-btn {
-    opacity: 1;
-}
-.copy-btn:hover {
-    background: var(--highlight-color);
-    color: var(--bg-color);
-}
-.copy-btn .fa-copy { margin-right: 0.3em; }
-.copy-btn .fa-check { color: var(--green-color); }
-
+pre[class*="language-"] { position: relative; margin: 1.5em 0 !important; border-radius: 8px !important; border: 1px solid var(--border-color); overflow: auto; }
+.copy-btn { position: absolute; top: 0.8em; right: 0.8em; background: #414868; border: none; color: var(--text-color); padding: 0.3rem 0.6rem; border-radius: 5px; cursor: pointer; opacity: 0.3; transition: opacity 0.2s; }
+pre[class*="language-"]:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: var(--highlight-color); color: var(--bg-color); }
 
 /* --- Panel de Estadísticas (Derecha) --- */
-.stats-content {
-    padding: 1.5rem;
-    flex-grow: 1;
-}
-.stats-section {
-    margin-bottom: 2rem;
-}
-.stat-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-    font-size: 0.9rem;
-}
-.stat-item span:first-child {
-    color: var(--text-color);
-    opacity: 0.8;
-}
-.stat-item span:last-child {
-    font-weight: bold;
-    color: var(--green-color);
-}
+.stats-content { padding: 1.5rem; flex-grow: 1; overflow-y: auto; }
+.stats-section { margin-bottom: 2rem; }
+.stat-item { display: flex; justify-content: space-between; padding: 0.5rem 0; font-size: 0.9rem; }
+.stat-item span:first-child { color: var(--text-color); opacity: 0.8; }
+.stat-item span:last-child { font-weight: bold; color: var(--green-color); }
 
 /* --- Scrollbars Personalizadas --- */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-::-webkit-scrollbar-track {
-    background: var(--bg-color);
-}
-::-webkit-scrollbar-thumb {
-    background-color: var(--border-color);
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background-color: var(--highlight-color);
-}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-color); }
+::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background-color: var(--highlight-color); }
 
 /* --- Estado de Carga --- */
-.loading-indicator {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-}
-.loading-indicator .fa-spinner {
-    font-size: 2rem;
-    color: var(--accent-color);
-}/* /public/style.css (AÑADIR AL FINAL) */
-#new-chat-btn {
-    background-color: var(--highlight-color);
-    color: var(--bg-color);
+.loading-indicator { display: flex; align-items: center; justify-content: center; padding: 2rem; }
+.loading-indicator .fa-spinner { font-size: 2rem; color: var(--accent-color); }
+
+/*
+=====================================================
+===               DISEÑO RESPONSIVE               ===
+=====================================================
+*/
+
+/* Por defecto, los botones de móvil están ocultos en escritorio */
+.mobile-only-btn {
+    display: none;
+    background: none;
     border: none;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
+    color: var(--text-color);
+    font-size: 1.5rem;
     cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s;
 }
-#new-chat-btn:hover {
-    background-color: #9abeff;
-}
-#new-chat-btn i {
-    margin-right: 0.3rem;
+.mobile-only-btn i {
+    margin: 0;
 }
 
-/* Añade o modifica esto en tu style.css */
-.history-panel header {
-    justify-content: space-between;
-}
+/* Media Query para pantallas pequeñas (móviles y tablets en vertical) */
+@media (max-width: 900px) {
+    .app-container {
+        /* Se convierte en una sola columna, mostrando solo el chat por defecto */
+        grid-template-columns: 1fr;
+    }
+    
+    .history-panel, .stats-panel {
+        /* Los paneles laterales se ocultan y se posicionan como overlays */
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        border-left: none; /* Eliminar borde de escritorio */
+    }
 
-.history-panel .header-buttons {
-    display: flex;
-    gap: 0.5rem; /* Espacio entre los botones */
+    /* Clase que se añade con JS para mostrar un panel */
+    .panel-visible {
+        display: flex; /* Esto hace que el panel oculto se muestre */
+    }
+    
+    /* Mostrar los botones de hamburguesa en la cabecera del chat */
+    .main-header .mobile-only-btn {
+        display: block;
+    }
+    
+    /* Mostrar los botones de cierre dentro de los paneles laterales */
+    .history-panel header .mobile-only-btn,
+    .stats-panel header .mobile-only-btn {
+        display: block;
+    }
+    
+    .main-header {
+        justify-content: space-between;
+    }
+
+    .main-header-title h1 {
+        font-size: 1.1rem; /* Reducir tamaño de fuente para que quepa */
+    }
+    
+    .main-header-title p {
+        font-size: 0.8rem;
+    }
 }
