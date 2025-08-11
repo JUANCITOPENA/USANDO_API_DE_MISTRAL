@@ -9,6 +9,8 @@
     --green-color: #9ece6a;
     --red-color: #f7768e;
     --font-family: 'Segoe UI', 'Roboto', sans-serif;
+    /* Altura dinámica del viewport, con fallback para navegadores antiguos */
+    --app-height: 100vh;
 }
 
 * {
@@ -18,30 +20,38 @@
 }
 
 html, body {
-    height: 100vh; /* Ocupa el 100% de la altura visible */
-    width: 100vw;  /* Ocupa el 100% del ancho visible */
+    height: 100vh;
+    /* Usamos la altura dinámica que definiremos con JS */
+    height: var(--app-height); 
+    width: 100vw;
     font-family: var(--font-family);
     background-color: var(--bg-color);
     color: var(--text-color);
-    overflow: hidden; /* Evita el scroll en el body */
+    overflow: hidden;
 }
 
-/* --- Estructura Principal (Desktop) --- */
+/* --- Estructura Principal --- */
 .app-container {
     display: grid;
     grid-template-columns: 280px 1fr 280px;
-    height: 100%; /* Usa el 100% de la altura del body */
+    height: 100%; /* Ocupa el 100% de la altura del body */
 }
 
-aside, main {
+/* La clave está aquí: el panel de chat es un contenedor flex que ocupa toda la altura */
+.chat-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+aside {
     background-color: var(--panel-bg-color);
     border-left: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    height: 100vh; /* Asegura que cada columna tenga la altura completa */
-    overflow: hidden; /* Evita scrolls internos no deseados */
+    overflow-y: auto;
 }
-
 .history-panel {
     border-left: none;
 }
@@ -53,7 +63,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-shrink: 0; /* Evita que el header se encoja */
+    flex-shrink: 0;
 }
 
 h1 { color: var(--highlight-color); font-size: 1.5rem; }
@@ -61,7 +71,7 @@ h2 { color: var(--accent-color); font-size: 1.2rem; }
 h3 { color: var(--green-color); margin-bottom: 0.8rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;}
 i { margin-right: 0.5rem; }
 
-/* --- Panel de Historial (Izquierda) --- */
+/* --- Panel de Historial y Estadísticas (sin cambios mayores) --- */
 .history-panel header .header-buttons { display: flex; gap: 0.5rem; }
 .history-list { flex-grow: 1; overflow-y: auto; padding: 0.5rem; }
 .history-item { padding: 0.8rem 1rem; margin-bottom: 0.5rem; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -72,98 +82,51 @@ i { margin-right: 0.5rem; }
 #new-chat-btn:hover { background-color: var(--green-color); color: var(--bg-color); }
 #clear-history-btn { border-color: var(--red-color); color: var(--red-color); }
 #clear-history-btn:hover { background-color: var(--red-color); color: var(--bg-color); }
-
-/* --- Panel de Chat (Central) --- */
-.chat-panel {
-    height: 100%; /* Usa toda la altura disponible del contenedor grid */
-}
-.main-header .main-header-title { text-align: center; }
-.main-header p { font-size: 0.9rem; color: var(--text-color); opacity: 0.7; }
-
-.chat-response {
-    flex-grow: 1; /* Permite que esta área crezca y ocupe el espacio sobrante */
-    padding: 1.5rem;
-    overflow-y: auto; /* El scroll SOLO aparecerá aquí */
-    line-height: 1.7;
-}
-
-.welcome-message { text-align: center; color: var(--accent-color); font-size: 1.2rem; margin-top: 2rem; }
-
-.chat-input-area {
-    padding: 1rem;
-    border-top: 1px solid var(--border-color);
-    background-color: rgba(0,0,0,0.1);
-    flex-shrink: 0; /* Evita que el área de input se encoja */
-}
-
-#chat-form { display: flex; align-items: flex-end; }
-#prompt-input {
-    flex-grow: 1;
-    background-color: #2e344e;
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 0.8rem;
-    font-family: inherit;
-    font-size: 1rem;
-    resize: none;
-    max-height: 200px;
-    overflow-y: auto;
-}
-#prompt-input:focus { outline: none; border-color: var(--highlight-color); box-shadow: 0 0 5px var(--highlight-color); }
-#send-btn { background-color: var(--highlight-color); color: var(--bg-color); border: none; border-radius: 8px; padding: 0.8rem 1.2rem; margin-left: 0.5rem; cursor: pointer; font-size: 1.1rem; transition: background-color 0.2s; }
-#send-btn:hover { background-color: #9abeff; }
-#send-btn:disabled { background-color: var(--border-color); cursor: not-allowed; }
-
-/* --- Estilos de la Respuesta del Chat --- */
-.message { margin-bottom: 2rem; padding: 1rem; border-radius: 8px; }
-.user-message { background-color: rgba(122, 162, 247, 0.1); border-left: 3px solid var(--highlight-color); }
-.ai-message { background-color: rgba(187, 154, 247, 0.05); }
-.message-header { font-weight: bold; color: var(--accent-color); margin-bottom: 0.5rem; display: flex; align-items: center; }
-.message-header.user { color: var(--highlight-color); }
-.message-content p { margin-bottom: 1em; }
-.message-content ul, .message-content ol { margin-left: 1.5em; margin-bottom: 1em; }
-.message-content a { color: var(--green-color); text-decoration: none; }
-.message-content a:hover { text-decoration: underline; }
-
-/* --- Bloques de Código y Prism.js --- */
-pre[class*="language-"] { position: relative; margin: 1.5em 0 !important; border-radius: 8px !important; border: 1px solid var(--border-color); overflow: auto; }
-.copy-btn { position: absolute; top: 0.8em; right: 0.8em; background: #414868; border: none; color: var(--text-color); padding: 0.3rem 0.6rem; border-radius: 5px; cursor: pointer; opacity: 0.3; transition: opacity 0.2s; }
-pre[class*="language-"]:hover .copy-btn { opacity: 1; }
-.copy-btn:hover { background: var(--highlight-color); color: var(--bg-color); }
-
-/* --- Panel de Estadísticas (Derecha) --- */
 .stats-content { padding: 1.5rem; flex-grow: 1; overflow-y: auto; }
 .stats-section { margin-bottom: 2rem; }
 .stat-item { display: flex; justify-content: space-between; padding: 0.5rem 0; font-size: 0.9rem; }
 .stat-item span:first-child { color: var(--text-color); opacity: 0.8; }
 .stat-item span:last-child { font-weight: bold; color: var(--green-color); }
 
+
+/* --- Panel de Chat Central (Clave) --- */
+.main-header .main-header-title { text-align: center; }
+.main-header p { font-size: 0.9rem; color: var(--text-color); opacity: 0.7; }
+.chat-response {
+    flex-grow: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    line-height: 1.7;
+}
+.chat-input-area {
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    background-color: rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+#chat-form { display: flex; align-items: flex-end; }
+#prompt-input { flex-grow: 1; background-color: #2e344e; color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.8rem; font-family: inherit; font-size: 1rem; resize: none; max-height: 200px; overflow-y: auto; }
+#prompt-input:focus { outline: none; border-color: var(--highlight-color); box-shadow: 0 0 5px var(--highlight-color); }
+#send-btn { background-color: var(--highlight-color); color: var(--bg-color); border: none; border-radius: 8px; padding: 0.8rem 1.2rem; margin-left: 0.5rem; cursor: pointer; font-size: 1.1rem; transition: background-color 0.2s; }
+#send-btn:hover { background-color: #9abeff; }
+#send-btn:disabled { background-color: var(--border-color); cursor: not-allowed; }
+
+/* --- Mensajes y Código (sin cambios) --- */
+.message { margin-bottom: 2rem; padding: 1rem; border-radius: 8px; }
+.user-message { background-color: rgba(122, 162, 247, 0.1); border-left: 3px solid var(--highlight-color); }
+.ai-message { background-color: rgba(187, 154, 247, 0.05); }
+.message-header { font-weight: bold; color: var(--accent-color); margin-bottom: 0.5rem; display: flex; align-items: center; }
+.message-header.user { color: var(--highlight-color); }
+.message-content p { margin-bottom: 1em; }
+pre[class*="language-"] { position: relative; margin: 1.5em 0 !important; border-radius: 8px !important; border: 1px solid var(--border-color); overflow: auto; }
+.copy-btn { position: absolute; top: 0.8em; right: 0.8em; background: #414868; border: none; color: var(--text-color); padding: 0.3rem 0.6rem; border-radius: 5px; cursor: pointer; opacity: 0.3; transition: opacity 0.2s; }
+pre[class*="language-"]:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: var(--highlight-color); color: var(--bg-color); }
+
+
 /* --- Scrollbars Personalizadas (Sin barras visibles) --- */
-::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
-::-webkit-scrollbar-track {
-    background: transparent; /* Pista transparente */
-}
-::-webkit-scrollbar-thumb {
-    background-color: var(--border-color);
-    border-radius: 3px;
-    border: 2px solid transparent; /* Crea un efecto de "delgadez" */
-    background-clip: content-box;
-}
-::-webkit-scrollbar-thumb:hover {
-    background-color: var(--highlight-color);
-}
-/* Específicamente para el área de texto del prompt, para que no muestre su propia barra */
-#prompt-input::-webkit-scrollbar {
-    display: none;
-}
-#prompt-input {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
+::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
+* { -ms-overflow-style: none; scrollbar-width: none; }
 
 
 /* --- Estado de Carga --- */
@@ -183,28 +146,23 @@ pre[class*="language-"]:hover .copy-btn { opacity: 1; }
         grid-template-columns: 1fr;
     }
     
-    aside, main {
-        height: 100%; /* Ajusta la altura al 100% del contenedor en móvil */
-        border: none;
-    }
-
     .history-panel, .stats-panel {
         display: none;
-        position: fixed; /* 'fixed' es mejor para overlays que cubren toda la pantalla */
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
-        z-index: 1000; /* Un z-index alto para estar por encima de todo */
-        transform: translateX(-100%); /* Oculto fuera de la pantalla a la izquierda */
+        height: var(--app-height); /* Usa la altura dinámica */
+        z-index: 1000;
+        transform: translateX(-100%);
         transition: transform 0.3s ease-in-out;
     }
     .stats-panel {
-        transform: translateX(100%); /* Oculto fuera de la pantalla a la derecha */
+        transform: translateX(100%);
     }
     .panel-visible {
         display: flex;
-        transform: translateX(0); /* Lo trae a la vista */
+        transform: translateX(0);
     }
     
     .main-header .mobile-only-btn { display: block; }
