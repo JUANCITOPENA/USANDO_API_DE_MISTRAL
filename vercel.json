@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/consulta"
+    }
+  ],
+  "functions": {
+    "api/consulta.js": {
+      "memory": 128,
+      "maxDuration": 20
+    }
+  }
+}

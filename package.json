@@ -1,0 +1,10 @@
+{
+  "name": "asistente-ai-mistral",
+  "version": "1.0.0",
+  "description": "Cliente de chat avanzado para la API de Mistral AI en Vercel.",
+  "type": "module",
+  "dependencies": {
+    "node-fetch": "3.3.2"
+  },
+  "author": "AI Assistant"
+}
