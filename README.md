@@ -103,6 +103,70 @@ Antes de comenzar, asegúrate de tener:
 - **API Key Mistral** - [Obtener en Mistral Console](https://console.mistral.ai/api-keys/)
 - **Git** - [Instalar Git](https://git-scm.com/downloads)
 
+## Codigo HTML - archivo index.html:
+Este código HTML crea una interfaz web para un asistente de IA similar a ChatGPT, pero usando el modelo Mistral. Es una aplicación de chat completa con historial y estadísticas.
+
+🏗️ Estructura Principal
+📱 Layout Responsivo
+
+3 paneles principales: Historial (izq) | Chat (centro) | Estadísticas (der)
+Diseño móvil: Botones para mostrar/ocultar paneles laterales
+
+
+🔧 Componentes Principales
+📚 Panel de Historial (history-panel)
+
+🕒 Muestra conversaciones anteriores
+➕ Botón "Nuevo chat"
+🗑️ Botón limpiar historial
+📱 Botón cerrar (móvil)
+
+💬 Panel de Chat Central (chat-panel)
+
+🎯 Header: Título "Asistente de Desarrollo AI - Potenciado por Mistral"
+📝 Área de respuestas: Donde aparecen los mensajes
+⌨️ Área de input: Textarea para escribir + botón enviar
+👋 Mensaje de bienvenida: "¡Hola! Soy tu asistente de desarrollo..."
+
+📊 Panel de Estadísticas (stats-panel)
+
+📈 Última interacción:
+
+⬆️ Tokens del prompt
+⬇️ Tokens de respuesta
+
+
+🔢 Totales de sesión:
+
+
+Tokens totales
+
+📝 Caracteres totales
+
+
+
+
+🎨 Recursos Externos
+🖼️ Estilos y Fuentes
+
+🎨 style.css (archivo local)
+🔤 Font Awesome → Iconos
+🌙 Prism Tomorrow → Resaltado de código
+
+⚙️ JavaScript
+
+📝 Marked.js → Renderizado Markdown
+🎨 Prism.js → Resaltado de sintaxis
+🔧 script.js → Lógica principal (módulo)
+
+
+🎯 Funcionalidad
+✅ Chat interactivo con IA
+✅ Historial de conversaciones
+✅ Estadísticas de uso
+✅ Interfaz responsive
+✅ Soporte para código y markdown
+✅ Diseño moderno con iconosReintentarClaude puede cometer errores. Por favor, verifique las respuestas.
 ### 📋 Instalación Paso a Paso
 
 #### 1️⃣ Clonar el Repositorio
