@@ -3,18 +3,9 @@
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/tu-usuario/tu-repositorio)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-
-
-# 🧠 Asistente de Desarrollo AI con Mistral
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftu-usuario%2Ftu-repositorio)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-> Un cliente de chat avanzado que funciona como un **lienzo de trabajo iterativo** con la API de Mistral AI.
-
 ---
 
-## 🎯 Concepto Clave: Lienzo Iterativo
+## 🎯 Concepto Clave
 
 A diferencia de un chat tradicional donde las respuestas se apilan, este asistente permite **modificar, mejorar y expandir la respuesta anterior**. Cada nueva instrucción refina el trabajo existente, creando un resultado único y unificado, ideal para tareas de desarrollo complejas como la generación y refactorización de código.
 
@@ -31,19 +22,7 @@ A diferencia de un chat tradicional donde las respuestas se apilan, este asisten
     *   Botones para copiar bloques de código con un solo clic.
     *   Área de texto auto-expandible y diseño 100% responsive.
 
-
 *   **Deployment:** Vercel
-
-## 🚀 Instalación Rápida
-
-Sigue estos pasos para desplegar tu propia instancia en minutos.
-
-### ✅ Prerrequisitos
-
-*   **Node.js** instalada.
-*   Una cuenta gratuita de **[Vercel](https://vercel.com/signup)**.
-*   Una **[clave de API de Mistral](https://console.mistral.ai/api-keys/)**.
-
 
  **Un cliente de chat avanzado y de código abierto que funciona como un lienzo de trabajo iterativo con la API de Mistral AI**
 
@@ -135,9 +114,18 @@ PROYECTO_ASISTENTE_AI/
 
 ## 🚀 Guía de Instalación
 
+Sigue estos pasos para desplegar tu propia instancia en minutos.
+
 ### ✅ Prerrequisitos
 
-Antes de comenzar, asegúrate de tener:
+*   **Node.js** instalada.
+*   Una cuenta gratuita de **[Vercel](https://vercel.com/signup)**.
+*   Una **[clave de API de Mistral](https://console.mistral.ai/api-keys/)**.
+
+
+### ✅ Prerrequisitos
+
+#### Antes de comenzar, asegúrate de tener:
 
 - **Node.js 18+** - [Descargar aquí](https://nodejs.org/)
 - **Cuenta Vercel** - [Registro gratuito](https://vercel.com/signup)
@@ -268,7 +256,7 @@ Archivo de estilos que define el **tema oscuro moderno** para la interfaz del as
 - ⚡ **Animaciones suaves**
 - 💻 **Resaltado de código** integrado
 
-### 📁 Código CSS
+## 📁 Código del archivo style.css
 
 ```css
 /* --- Variables y Estilos Globales --- */
@@ -649,7 +637,7 @@ pre[class*="language-"]:hover .copy-btn {
 - 🚨 **Manejo robusto de errores**
 - 🌐 **Compatible** con Vercel/Netlify Functions
 
-### 📁 Código JavaScript
+### 📁 Código  del archivo consulta.js en JavaScript
 
 ```javascript
 import fetch from "node-fetch";
@@ -745,9 +733,7 @@ MISTRAL_API_KEY=tu_clave_api_mistral_aqui
 
 
 
-### Arhivo script.js:
-
-## ⚙️ Lógica JavaScript (script.js)
+## ⚙️ Codigo del archivo script.js:
 
 ### 📋 Descripción
 **Motor principal de la aplicación** que maneja toda la interacción del usuario, comunicación con la API, gestión del historial y renderizado dinámico de mensajes con soporte completo para Markdown y resaltado de código.
