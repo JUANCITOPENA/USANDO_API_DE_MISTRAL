@@ -106,6 +106,7 @@ Antes de comenzar, asegúrate de tener:
 ## Codigo HTML - archivo index.html:
 
 Interfaz web para un asistente de IA que utiliza el modelo Mistral. Aplicación de chat completa con historial de conversaciones y estadísticas de uso en tiempo real.
+
 ✨ Características
 
 💬 Chat interactivo con IA
@@ -115,17 +116,8 @@ Interfaz web para un asistente de IA que utiliza el modelo Mistral. Aplicación 
 🎨 Soporte para Markdown y resaltado de código
 🌙 Tema oscuro moderno
 
-🔧 Tecnologías
-
-HTML5 - Estructura base
-CSS3 - Estilos personalizados
-JavaScript ES6 - Lógica de la aplicación
-Font Awesome - Iconografía
-Prism.js - Resaltado de sintaxis
-Marked.js - Renderizado de Markdown
-
-📁 Código HTML
-html<!DOCTYPE html>
+```html
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
