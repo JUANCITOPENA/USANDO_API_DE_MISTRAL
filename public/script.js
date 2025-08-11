@@ -1,21 +1,3 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // *** INICIO DEL CÓDIGO AÑADIDO PARA SOLUCIONAR EL PROBLEMA DEL TECLADO ***
-    const appHeight = () => {
-        const doc = document.documentElement;
-        doc.style.setProperty('--app-height', `${window.innerHeight}px`);
-    };
-    window.addEventListener('resize', appHeight);
-    appHeight();
-
-    const promptInputForFocus = document.getElementById('prompt-input');
-    promptInputForFocus.addEventListener('focus', () => {
-        setTimeout(() => {
-            promptInputForFocus.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }, 150);
-    });
-    // *** FIN DEL CÓDIGO AÑADIDO ***
-
-
 // --- Selección de Elementos del DOM ---
 const chatForm = document.getElementById('chat-form');
 const promptInput = document.getElementById('prompt-input');
