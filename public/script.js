@@ -1,4 +1,3 @@
-// --- Inicialización ---
 document.addEventListener('DOMContentLoaded', () => {
     // *** INICIO DEL CÓDIGO AÑADIDO PARA SOLUCIONAR EL PROBLEMA DEL TECLADO ***
     const appHeight = () => {
@@ -11,277 +10,257 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', appHeight);
     appHeight();
 
-    const promptInputForFocus = document.getElementById('prompt-input');
+    const promptInputForFocus = document.getElementById('pregunta');
     // Cuando el usuario toca el input...
     promptInputForFocus.addEventListener('focus', () => {
         // ...espera un momento a que el teclado aparezca...
         setTimeout(() => {
             // ...y haz scroll para que el input quede visible.
             promptInputForFocus.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }, 150); // Un pequeño retardo para asegurar que el teclado se ha mostrado
+        }, 150);
     });
     // *** FIN DEL CÓDIGO AÑADIDO ***
 
 
-    // El resto de tu código original continúa aquí sin cambios.
-    // --- Selección de Elementos del DOM ---
-    const chatForm = document.getElementById('chat-form');
-    const promptInput = document.getElementById('prompt-input'); // Ya definido arriba, pero lo dejamos por consistencia
-    const sendBtn = document.getElementById('send-btn');
-    const chatResponse = document.getElementById('chat-response');
-    const historyList = document.getElementById('history-list');
-    const newChatBtn = document.getElementById('new-chat-btn');
-    const clearHistoryBtn = document.getElementById('clear-history-btn');
-    const historyPanel = document.getElementById('history-panel');
-    const statsPanel = document.getElementById('stats-panel');
-    const toggleHistoryBtn = document.getElementById('toggle-history-btn');
-    const toggleStatsBtn = document.getElementById('toggle-stats-btn');
-    const closeHistoryBtn = document.getElementById('close-history-btn');
-    const closeStatsBtn = document.getElementById('close-stats-btn');
-    const promptStatsEl = document.getElementById('prompt-stats');
-    const completionStatsEl = document.getElementById('completion-stats');
-    const sessionTotalTokensEl = document.getElementById('session-total-tokens');
-    const sessionTotalCharsEl = document.getElementById('session-total-chars');
+    // --- TU CÓDIGO ORIGINAL COMIENZA AQUÍ (SIN CAMBIOS) ---
+    // --- ELEMENTOS DEL DOM ---
+    const btnEnviar = document.getElementById("enviar");
+    const preguntaInput = document.getElementById("pregunta");
+    const respuestaContainer = document.getElementById("respuesta-container");
+    const respuestaDiv = document.getElementById("respuesta");
+    const historyList = document.getElementById("history-list");
+    const btnClearHistory = document.getElementById("clear-history");
+    const originalButtonHTML = btnEnviar.innerHTML;
+    const totalPromptsCountEl = document.getElementById("total-prompts-count");
 
-    // --- Estado de la Aplicación ---
-    let state = {
-        history: [],
-        currentConversation: [],
-        currentConversationId: null,
-        sessionTotals: { tokens: 0, chars: 0 },
-        isLoading: false,
+    // Elementos de estadísticas por prompt
+    const promptTokensEl = document.getElementById("prompt-tokens");
+    const completionTokensEl = document.getElementById("completion-tokens");
+    const promptCharsEl = document.getElementById("prompt-chars");
+    const completionCharsEl = document.getElementById("completion-chars");
+    
+    // Elementos de estadísticas totales de sesión
+    const sessionTotalPromptsEl = document.getElementById("session-total-prompts");
+    const sessionTotalTokensEl = document.getElementById("session-total-tokens");
+    const sessionTotalCharsEl = document.getElementById("session-total-chars");
+
+    // --- ESTADO DE LA APLICACIÓN ---
+    let chatHistory = [];
+
+    // --- FUNCIONES DE CÁLCULO ---
+    const calculateTokens = (text) => !text ? 0 : Math.ceil(text.length / 4);
+    const calculateChars = (text) => !text ? 0 : text.length;
+
+    // --- LÓGICA DE HISTORIAL Y ESTADO PERSISTENTE ---
+    const loadState = () => {
+        const savedHistory = localStorage.getItem('mistralChatHistory');
+        if (savedHistory) {
+            try {
+                chatHistory = JSON.parse(savedHistory);
+            } catch (e) {
+                console.error("Error al parsear el historial, reseteando.", e);
+                chatHistory = [];
+            }
+        }
+        renderHistory();
+        updateSessionTotals();
     };
 
-    // --- Constantes ---
-    const MOBILE_BREAKPOINT = 800;
+    const saveState = () => {
+        localStorage.setItem('mistralChatHistory', JSON.stringify(chatHistory));
+    };
     
-    // El resto de la inicialización
-    loadFromLocalStorage();
-    setupEventListeners();
-    startNewChat(false);
+    // --- LÓGICA DE RENDERIZADO ---
+    const renderHistory = () => {
+        historyList.innerHTML = '';
+        chatHistory.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.textContent = item.question;
+            li.dataset.index = index;
+            li.addEventListener('click', (e) => {
+                document.querySelectorAll('#history-list li').forEach(el => el.classList.remove('active'));
+                e.currentTarget.classList.add('active');
 
+                const selectedItem = chatHistory[index];
+                preguntaInput.value = selectedItem.question;
+                autoExpandTextarea(preguntaInput);
+                renderResponse(selectedItem.answer);
+                updateStatsPanel(selectedItem.stats);
+            });
+            historyList.appendChild(li);
+        });
+        totalPromptsCountEl.textContent = chatHistory.length;
+    };
 
-    // --- Lógica Principal de Eventos ---
-    function setupEventListeners() {
-        chatForm.addEventListener('submit', handleFormSubmit);
-        newChatBtn.addEventListener('click', () => startNewChat(true));
-        clearHistoryBtn.addEventListener('click', clearAllData);
-        historyList.addEventListener('click', handleHistoryClick);
-        promptInput.addEventListener('input', autoExpandTextarea);
-        promptInput.addEventListener('keydown', handleTextareaKeydown);
-        chatResponse.addEventListener('click', handleChatResponseClick);
-        toggleHistoryBtn.addEventListener('click', () => historyPanel.classList.add('panel-visible'));
-        toggleStatsBtn.addEventListener('click', () => statsPanel.classList.add('panel-visible'));
-        closeHistoryBtn.addEventListener('click', () => historyPanel.classList.remove('panel-visible'));
-        closeStatsBtn.addEventListener('click', () => statsPanel.classList.remove('panel-visible'));
-    }
-
-    function startNewChat(savePrevious = true) {
-        if (savePrevious && state.currentConversation.length > 0) {
-            saveCurrentConversationToHistory();
-        }
-        state.currentConversation = [];
-        state.currentConversationId = null;
-        chatResponse.innerHTML = `<div class="welcome-message"><p>¡Hola! Soy tu asistente de desarrollo. ¿En qué puedo ayudarte hoy?</p></div>`;
-        promptStatsEl.textContent = '-';
-        completionStatsEl.textContent = '-';
+    const addToHistory = (question, answer, stats) => {
+        chatHistory.unshift({ question, answer, stats });
+        if (chatHistory.length > 50) chatHistory.pop();
+        saveState();
         renderHistory();
-    }
-
-    async function handleFormSubmit(e) {
-        e.preventDefault();
-        if (state.isLoading) return;
-
-        const userPrompt = promptInput.value.trim();
-        if (!userPrompt) return;
-
-        setLoading(true);
-
-        if (state.currentConversation.length === 0) {
-            chatResponse.innerHTML = '';
-            state.currentConversationId = Date.now();
+        updateSessionTotals();
+    };
+    
+    // --- FUNCIONES DE ACTUALIZACIÓN DE UI (CORREGIDAS) ---
+    const updateStatsPanel = (stats) => {
+        let currentStats = stats;
+        // Si no hay 'stats', es un registro antiguo. Lo calculamos al vuelo.
+        if (!currentStats) {
+            currentStats = { promptTokens: 0, completionTokens: 0, promptChars: 0, completionChars: 0 };
         }
         
-        const lastAiMessageElement = chatResponse.querySelector('.ai-message:last-of-type');
+        promptTokensEl.textContent = (currentStats.promptTokens || 0).toLocaleString('es-ES');
+        completionTokensEl.textContent = (currentStats.completionTokens || 0).toLocaleString('es-ES');
+        promptCharsEl.textContent = (currentStats.promptChars || 0).toLocaleString('es-ES');
+        completionCharsEl.textContent = (currentStats.completionChars || 0).toLocaleString('es-ES');
+    };
 
-        const userMessage = { role: 'user', content: userPrompt };
-        state.currentConversation.push(userMessage);
-        renderMessage(userMessage.content, 'user');
-        promptInput.value = '';
-        autoExpandTextarea();
-        
-        const loadingIndicator = renderLoadingIndicator();
+    const updateSessionTotals = () => {
+        const totalPrompts = chatHistory.length;
+
+        // --- CORRECCIÓN CRÍTICA AQUÍ ---
+        // Esta función ahora es a prueba de fallos. Si un 'item' no tiene 'stats', no se romperá.
+        const sessionTotals = chatHistory.reduce((totals, item) => {
+            if (item && item.stats) { // Verifica que el item y sus stats existan
+                totals.tokens += (item.stats.promptTokens || 0) + (item.stats.completionTokens || 0);
+                totals.chars += (item.stats.promptChars || 0) + (item.stats.completionChars || 0);
+            }
+            return totals;
+        }, { tokens: 0, chars: 0 }); // Inicia el acumulador con un objeto
+
+        sessionTotalPromptsEl.textContent = totalPrompts;
+        sessionTotalTokensEl.textContent = sessionTotals.tokens.toLocaleString('es-ES');
+        sessionTotalCharsEl.textContent = sessionTotals.chars.toLocaleString('es-ES');
+    };
+
+    btnClearHistory.addEventListener('click', () => {
+        if (confirm('¿Estás seguro? Se borrará todo el historial y las estadísticas de la sesión.')) {
+            chatHistory = [];
+            saveState();
+            renderHistory();
+            updateSessionTotals();
+            updateStatsPanel(null);
+            respuestaContainer.classList.add('hidden');
+            preguntaInput.value = '';
+            autoExpandTextarea(preguntaInput);
+        }
+    });
+    
+    // --- EVENTO EN TIEMPO REAL MIENTRAS SE ESCRIBE ---
+    preguntaInput.addEventListener('input', () => {
+        autoExpandTextarea(preguntaInput);
+        const promptText = preguntaInput.value;
+        const stats = {
+            promptTokens: calculateTokens(promptText),
+            completionTokens: 0,
+            promptChars: calculateChars(promptText),
+            completionChars: 0
+        };
+        updateStatsPanel(stats);
+    });
+
+    // --- LÓGICA PRINCIPAL DE API ---
+    const consultarAPI = async () => {
+        const pregunta = preguntaInput.value.trim();
+        if (!pregunta) return;
+
+        setLoadingState(true);
+        respuestaDiv.innerHTML = '';
+        respuestaContainer.classList.remove('hidden');
 
         try {
-            const response = await fetchMistralAPI(state.currentConversation);
-            const { reply, usage } = response;
-            
-            if (lastAiMessageElement) {
-                lastAiMessageElement.remove();
-                const lastAssistantIndex = state.currentConversation.findLastIndex(m => m.role === 'assistant');
-                if(lastAssistantIndex > -1) {
-                    state.currentConversation.splice(lastAssistantIndex, 1);
+            const res = await fetch("/api/consulta", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ pregunta }),
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                const stats = {
+                    promptTokens: calculateTokens(pregunta),
+                    completionTokens: calculateTokens(data.respuesta),
+                    promptChars: calculateChars(pregunta),
+                    completionChars: calculateChars(data.respuesta)
+                };
+                updateStatsPanel(stats);
+                renderResponse(data.respuesta);
+                addToHistory(pregunta, data.respuesta, stats);
+            } else {
+                renderResponse(`**Error:** ${data.error || "No se pudo obtener respuesta"}`);
+            }
+        } catch (error) {
+            renderResponse(`**Error de conexión:** Revisa tu conexión o el estado del servidor.`);
+        } finally {
+            setLoadingState(false);
+        }
+    };
+    
+    // --- OTRAS FUNCIONES ---
+    const autoExpandTextarea = (textarea) => {
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+    };
+
+    const renderResponse = (markdownText) => {
+        const htmlResponse = marked.parse(markdownText);
+        respuestaDiv.innerHTML = htmlResponse;
+        addCodeEnhancements();
+    };
+
+    const addCodeEnhancements = () => {
+        const langMap = { 'pitón': 'python', 'python': 'python', 'javascript': 'javascript', 'js': 'javascript', 'java': 'java', 'c#': 'csharp', 'do#': 'csharp', 'csharp': 'csharp', 'sql': 'sql', 'html': 'html', 'css': 'css', 'bash': 'bash', 'shell': 'shell' };
+        const codeBlocks = respuestaDiv.querySelectorAll('pre');
+        codeBlocks.forEach(block => {
+            const code = block.querySelector('code');
+            if (!code) return;
+            let language = '';
+            const languageClass = Array.from(code.classList).find(cls => cls.startsWith('language-'));
+            if (languageClass) language = languageClass.replace('language-', '');
+            if (!language) {
+                const prevElement = block.previousElementSibling;
+                if (prevElement && prevElement.innerText) {
+                    const prevText = prevElement.innerText.toLowerCase().replace(/[:.]/g, '').trim().split(' ').pop();
+                    if (langMap[prevText]) {
+                        language = langMap[prevText];
+                        code.classList.add(`language-${language}`);
+                    }
                 }
             }
-            
-            const newAssistantMessage = { role: 'assistant', content: reply, usage: usage }; // Guardamos el usage
-            state.currentConversation.push(newAssistantMessage);
-            
-            loadingIndicator.remove();
-            renderMessage(reply, 'ai', true);
-
-            updateTurnStats(usage);
-            updateSessionTotals(usage);
-            updateSessionStatsUI();
-            saveCurrentConversationToHistory();
-            saveToLocalStorage();
-
-        } catch (error) {
-            console.error('Error en la comunicación con la API:', error);
-            loadingIndicator.remove();
-            renderMessage(`Error: ${error.message}`, 'error', true);
-            state.currentConversation.pop();
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    async function fetchMistralAPI(messages) {
-        const response = await fetch('/api/consulta', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages }),
-        });
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Fallo al obtener respuesta de la API.');
-        }
-        return response.json();
-    }
-
-    function renderMessage(content, role, parseMarkdown = false) {
-        const messageContainer = document.createElement('div');
-        messageContainer.className = `message ${role}-message`;
-        if (role === 'assistant' || role === 'error') {
-            messageContainer.classList.add('ai-message');
-        }
-        
-        const header = document.createElement('div');
-        header.className = `message-header ${role}`;
-        header.innerHTML = `<i class="fa-solid ${role === 'user' ? 'fa-user' : 'fa-robot'}"></i> ${role === 'user' ? 'Tú' : 'Asistente AI'}`;
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
-
-        if (parseMarkdown) {
-            contentDiv.innerHTML = marked.parse(content);
-            setTimeout(() => Prism.highlightAllUnder(contentDiv), 0);
-            addCopyButtons(contentDiv);
-        } else if (role === 'error') {
-            contentDiv.innerHTML = `<p style="color: var(--red-color);">${content}</p>`;
-        } else {
-            const p = document.createElement('p');
-            p.textContent = content;
-            contentDiv.appendChild(p);
-        }
-        messageContainer.appendChild(header);
-        messageContainer.appendChild(contentDiv);
-        chatResponse.appendChild(messageContainer);
-        chatResponse.scrollTop = chatResponse.scrollHeight;
-    }
-
-    function renderLoadingIndicator() {
-        const loadingContainer = document.createElement('div');
-        loadingContainer.className = 'message ai-message loading-placeholder';
-        loadingContainer.innerHTML = `<div class="message-header ai"><i class="fa-solid fa-robot"></i> Asistente AI</div><div class="message-content"><div class="loading-indicator"><i class="fa-solid fa-spinner fa-spin"></i></div></div>`;
-        chatResponse.appendChild(loadingContainer);
-        chatResponse.scrollTop = chatResponse.scrollHeight;
-        return loadingContainer;
-    }
-
-    function renderHistory() {
-        historyList.innerHTML = '';
-        if (state.history.length === 0) {
-            historyList.innerHTML = '<p style="padding: 1rem; opacity: 0.6;">No hay historial aún.</p>';
-            return;
-        }
-        [...state.history].reverse().forEach((item, revIndex) => {
-            const index = state.history.length - 1 - revIndex;
-            const div = document.createElement('div');
-            div.className = 'history-item';
-            div.textContent = item.title;
-            div.dataset.id = item.id;
-            if (item.id === state.currentConversationId) {
-                div.classList.add('active');
+            if (language) {
+                block.dataset.lang = language;
+                Prism.highlightElement(code);
+                const btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copiar';
+                btn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(code.innerText).then(() => {
+                        btn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado!';
+                        btn.classList.add('copied');
+                        setTimeout(() => {
+                            btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copiar';
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+                block.appendChild(btn);
             }
-            div.addEventListener('click', () => handleHistoryClick(item.id));
-            historyList.appendChild(div);
         });
-    }
+    };
 
-    function handleHistoryClick(id) {
-        if (id === state.currentConversationId) return;
-        startNewChat(true);
-        const conversation = state.history.find(item => item.id === id);
-        if (conversation) {
-            state.currentConversationId = conversation.id;
-            state.currentConversation = [...conversation.messages];
-            chatResponse.innerHTML = '';
-            
-            // Renderizar todos los mensajes de la conversación cargada
-            conversation.messages.forEach(msg => {
-                renderMessage(msg.content, msg.role, msg.role === 'assistant');
-            });
+    const setLoadingState = (isLoading) => {
+        btnEnviar.disabled = isLoading;
+        btnEnviar.innerHTML = isLoading ? `<div class="spinner"></div><span>Enviando...</span>` : originalButtonHTML;
+    };
 
-            const lastUsage = conversation.messages.findLast(m => m.role === 'assistant')?.usage;
-            updateTurnStats(lastUsage || null);
-            renderHistory();
-            if (window.innerWidth <= MOBILE_BREAKPOINT) {
-                historyPanel.classList.remove('panel-visible');
-            }
+    // --- EVENT LISTENERS ---
+    btnEnviar.addEventListener("click", consultarAPI);
+    preguntaInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            consultarAPI();
         }
-    }
+    });
 
-    function setLoading(isLoading) { state.isLoading = isLoading; sendBtn.disabled = isLoading; promptInput.disabled = isLoading; }
-    function updateTurnStats(usage) { 
-        const promptTokens = usage?.prompt_tokens || 0; 
-        const replyTokens = usage?.completion_tokens || 0; 
-        const lastUserMessage = state.currentConversation.filter(m => m.role === 'user').pop()?.content || ''; 
-        const lastAssistantMessage = state.currentConversation.filter(m => m.role === 'assistant').pop()?.content || ''; 
-        promptStatsEl.textContent = `${promptTokens} tokens / ${lastUserMessage.length} chars`; 
-        completionStatsEl.textContent = `${replyTokens} tokens / ${lastAssistantMessage.length} chars`; 
-    }
-    function updateSessionTotals(usage) { 
-        if (usage) {
-            state.sessionTotals.tokens += usage.total_tokens; 
-            const lastUserChars = state.currentConversation.filter(m => m.role === 'user').pop()?.content.length || 0; 
-            const lastAssistantChars = state.currentConversation.filter(m => m.role === 'assistant').pop()?.content.length || 0;
-            state.sessionTotals.chars += lastUserChars + lastAssistantChars;
-        }
-        updateSessionStatsUI();
-    }
-    function updateSessionStatsUI() { sessionTotalTokensEl.textContent = state.sessionTotals.tokens.toLocaleString(); sessionTotalCharsEl.textContent = state.sessionTotals.chars.toLocaleString(); }
-
-    function saveCurrentConversationToHistory() {
-        if (!state.currentConversationId || state.currentConversation.length < 2) return;
-        
-        const firstUserPrompt = state.currentConversation.find(m => m.role === 'user');
-        if (!firstUserPrompt) return;
-
-        const existingIndex = state.history.findIndex(item => item.id === state.currentConversationId);
-        const conversationData = { id: state.currentConversationId, title: firstUserPrompt.content.substring(0, 40) + '...', messages: [...state.currentConversation] };
-        if (existingIndex > -1) { 
-            state.history[existingIndex] = conversationData; 
-        } else { 
-            state.history.push(conversationData); 
-        }
-        renderHistory();
-    }
-    function saveToLocalStorage() { const stateToSave = { history: state.history, sessionTotals: state.sessionTotals }; localStorage.setItem('aiDevAssistantState_v5', JSON.stringify(stateToSave)); }
-    function loadFromLocalStorage() { const savedState = localStorage.getItem('aiDevAssistantState_v5'); if (savedState) { const parsedState = JSON.parse(savedState); state.history = parsedState.history || []; state.sessionTotals = parsedState.sessionTotals || { tokens: 0, chars: 0 }; } updateSessionStatsUI(); }
-    function clearAllData() { if (confirm('¿Estás seguro de que quieres borrar todo el historial?')) { localStorage.removeItem('aiDevAssistantState_v5'); state.history = []; state.sessionTotals = { tokens: 0, chars: 0 }; startNewChat(false); updateSessionStatsUI(); } }
-
-    function autoExpandTextarea() { promptInput.style.height = 'auto'; promptInput.style.height = `${promptInput.scrollHeight}px`; }
-    function handleTextareaKeydown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatForm.requestSubmit(); } }
-    function addCopyButtons(container) { container.querySelectorAll('pre').forEach(pre => { const copyBtn = document.createElement('button'); copyBtn.className = 'copy-btn'; copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Copiar'; pre.appendChild(copyBtn); }); }
-    function handleChatResponseClick(e) { if (e.target.closest('.copy-btn')) { const btn = e.target.closest('.copy-btn'); const pre = btn.parentElement; const code = pre.querySelector('code').innerText; navigator.clipboard.writeText(code).then(() => { btn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado'; setTimeout(() => btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copiar', 2000); }); } }
+    // --- INICIALIZACIÓN DE LA APP ---
+    loadState();
 });
